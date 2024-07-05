@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from './Todolist';
 import {v1} from 'uuid';
+import {Button} from "./components/Button";
 
 
 type ObjectType = {
@@ -166,38 +167,56 @@ function App() {
         setTodo(todo.filter((el, index) => index !== todolistId))
     }
 
-    return (
-        <div className="App">
-            {
-                todo.map((tl, index) => {
-                    let allTodolistTasks = tl.tasks;
-                    let tasksForTodolist = allTodolistTasks;
+    const removeAllTodoLists = () => {
+        setTodo([])
+    }
 
-                    if (tl.filter === "active") {
-                        tasksForTodolist = allTodolistTasks.filter(t => t.isDone === false);
-                    }
-                    if (tl.filter === "completed") {
-                        tasksForTodolist = allTodolistTasks.filter(t => t.isDone === true);
-                    }
+    const removeAllTasksInOneTodoList = (todolistId: number) => {
+        setTodo(prevState => prevState.map((t, index) =>
+            index === todolistId
+                ? {...t, tasks: []}
+                : t
+        ))
+        }
 
-                    return <Todolist
-                        key={index}
-                        id={index}
-                        title={tl.title}
-                        tasks={tasksForTodolist}
-                        students={tl.students}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        addTask={addTask}
-                        changeTaskStatus={changeStatus}
-                        filter={tl.filter}
-                        removeTodolist={removeTodolist}
-                    />
-                })
-            }
+        return (
+            <div className="App">
 
-        </div>
-    );
+                <div>
+                    <Button title={'Remove all Todo Lists'} onClick={removeAllTodoLists}/>
+                </div>
+
+                {
+                    todo.map((tl, index) => {
+                        let allTodolistTasks = tl.tasks;
+                        let tasksForTodolist = allTodolistTasks;
+
+                        if (tl.filter === "active") {
+                            tasksForTodolist = allTodolistTasks.filter(t => t.isDone === false);
+                        }
+                        if (tl.filter === "completed") {
+                            tasksForTodolist = allTodolistTasks.filter(t => t.isDone === true);
+                        }
+
+                        return <Todolist
+                            key={index}
+                            id={index}
+                            title={tl.title}
+                            tasks={tasksForTodolist}
+                            students={tl.students}
+                            removeTask={removeTask}
+                            changeFilter={changeFilter}
+                            addTask={addTask}
+                            changeTaskStatus={changeStatus}
+                            filter={tl.filter}
+                            removeTodolist={removeTodolist}
+                            removeAllTasksInOneTodoList={removeAllTasksInOneTodoList}
+                        />
+                    })
+                }
+
+            </div>
+        );
 }
 
 export default App;
